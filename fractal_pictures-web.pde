@@ -62,17 +62,16 @@ class Transformation {
 
 }
 
-PShape makeShape(ArrayList<PVector> vertices){
-    // Make a shape from a list of vertices, used to draw each triangle on the screen
-    PShape sh = createShape();
-    sh.beginShape();
-    sh.noStroke();
-    sh.fill(0, 255);
-    for(PVector v : vertices){
-        sh.vertex(v.x, v.y);
-    }
-    sh.endShape(CLOSE);
-    return sh;
+int[] makeShape(ArrayList<PVector> vertices){
+    // Make a list of coordinates from the list of vertices
+    int[] outArr = new int[6];
+    outArr[0] = (int) vertices.get(0).x;
+    outArr[1] = (int) vertices.get(0).y;
+    outArr[2] = (int) vertices.get(1).x;
+    outArr[3] = (int) vertices.get(1).y;
+    outArr[4] = (int) vertices.get(2).x;
+    outArr[5] = (int) vertices.get(2).y;
+    return outArr;
 }
 
 void makeFractal(ArrayList<Transformation> transformations, ArrayList<PVector> vertices, int depth){
@@ -95,10 +94,10 @@ void makeFractal(ArrayList<Transformation> transformations, ArrayList<PVector> v
 
 ArrayList<PVector> fixedPoints = new ArrayList<PVector>(); // fixed control points of the transformations
 ArrayList<Transformation> transformations = new ArrayList<Transformation>(); // the transformations (scaling and rotation)
-ArrayList<PShape> fractal = new ArrayList<PShape>(); // list of triangles to be drawn, so we don't need to recompute each frame
+ArrayList<int[]> fractal = new ArrayList<int[]>(); // list of triangles to be drawn, so we don't need to recompute each frame
 Transformation activeTransformation; // which of the transformations is undergoing user control
 int activeTransformationIndex; // index of the active transformation
-int depth = 5; // initial depth of fractal recursion
+int depth = 0; // initial depth of fractal recursion
 boolean updated = true; // sets to true when fractal needs to be recomputed
 
 
@@ -121,19 +120,21 @@ void setup() {
 void draw(){
 
     background(200, 200, 255);
-
-    for(PShape sh: fractal){
-        shape(sh); // draw the shapes in the fractal
+    
+    noStroke();
+    fill(0);
+    for(int[] sh: fractal){
+        triangle(sh[0], sh[1], sh[2], sh[3], sh[4], sh[5]); // draw the shapes in the fractal
     }
 
     activeTransformation.drawPoint(); // draw the control for the active fixed point
 
     text("Recursion depth: "+depth, 5, 15);
-    text("Scale factor: "+String.format("%.2f", activeTransformation.scaleFactor), 5, 30);
-    text("Rotate factor: "+String.format("%.2f", activeTransformation.rotateFactor), 5, 45);
+    text("Scale factor: "+activeTransformation.scaleFactor, 5, 30);
+    text("Rotate factor: "+activeTransformation.rotateFactor, 5, 45);
 
     if(updated){ // recompute the triangle vertices
-        fractal = new ArrayList<PShape>();
+        fractal = new ArrayList<int[]>();
         makeFractal(transformations, new ArrayList<PVector>(fixedPoints.subList(0,Math.min(3, fixedPoints.size()))), depth);
     }
 
