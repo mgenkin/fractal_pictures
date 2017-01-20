@@ -3,7 +3,30 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/processing.js/1.6.0/processing.js"></script>
 </head>
 <body>
-    <p> HELLO </p>
-	<canvas data-processing-sources="fractal_pictures-web.pde"></canvas>
+    <script type="text/javascript">
+    window.onload = function() {
+      document.getElementById("sketch1").click();
+    };
+    </script>
+    <p> Use this to make fractal pictures. 
+        <br/>
+        <br/>
+        Clicking adds a new transformation with a fixed point at the clicked point.
+        <br/>
+        Moving your mouse near an existing fixed point will allow you to edit it by:
+        <br/>
+        <br/>
+        Hit DEL to delete the transformation
+        <br/>
+        'Q' and 'A' increase and decrease the scale factor (initially 1/2)
+        <br/>
+        'W' and 'S' increase and decrease the rotation (initially 0)
+        <br/>
+        <br/>
+        'E' and 'D' increase and decrease depth: be careful with this, or you will crash your browser.
+    </p>
+    <div align=center>
+    	<canvas id="sketch1" data-processing-sources="fractal_pictures-web.pde"></canvas>
+    </div>
 </body>
 

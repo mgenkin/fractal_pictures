@@ -6,7 +6,7 @@ class Transformation {
     float rotateFactor; // Angle by which the transformation rotates
     boolean active; // Boolean describes whether the transformation is currently being edited by the user on the screen
     float scaleFactorIncreaseRate = 1.1; // rate at which scale factor is increased and decreased by user controls
-    float rotateFactorIncreaseRate = 0.1*PI;
+    float rotateFactorIncreaseRate = 0.02*PI;
     Transformation(PVector fp, float sc, float rt){
         fixedPoint = fp;
         scaleFactor = sc;
@@ -97,7 +97,7 @@ ArrayList transformations = new ArrayList(); // the transformations (scaling and
 ArrayList fractal = new ArrayList(); // list of triangles to be drawn, so we don't need to recompute each frame
 Transformation activeTransformation; // which of the transformations is undergoing user control
 int activeTransformationIndex; // index of the active transformation
-int depth = 0; // initial depth of fractal recursion
+int depth = 3; // initial depth of fractal recursion
 boolean updated = true; // sets to true when fractal needs to be recomputed
 
 
