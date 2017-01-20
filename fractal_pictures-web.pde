@@ -16,7 +16,7 @@ class Transformation {
     PVector apply(PVector v){
         // Applies the transformation to a vector v that describes a location on the screen
         // First subtracts the fixed point, then applies scaling and rotation, then adds back the fixed point
-        PVector vOut = v.copy();
+        PVector vOut = new PVector(v.x, v.y);
         vOut.sub(fixedPoint);
         vOut.mult(scaleFactor);
         vOut.rotate(rotateFactor);
@@ -62,7 +62,7 @@ class Transformation {
 
 }
 
-int[] makeShape(ArrayList<PVector> vertices){
+int[] makeShape(ArrayList vertices){
     // Make a list of coordinates from the list of vertices
     int[] outArr = new int[6];
     outArr[0] = (int) vertices.get(0).x;
@@ -74,7 +74,7 @@ int[] makeShape(ArrayList<PVector> vertices){
     return outArr;
 }
 
-void makeFractal(ArrayList<Transformation> transformations, ArrayList<PVector> vertices, int depth){
+void makeFractal(ArrayList transformations, ArrayList vertices, int depth){
     // Main recursive fractal making function, takes in an initial shape (vertices) and the set of tranformations
     //      as well as the depth to which the fractal should be approximated
     if(depth == 0){ // simply make the triangle specified by the vertices (to be drawn to screen)
@@ -82,7 +82,7 @@ void makeFractal(ArrayList<Transformation> transformations, ArrayList<PVector> v
     } else {
         for(Transformation tr: transformations){
             // Apply each transformation to the shape specified by "vertices", and make the recursive call
-            ArrayList<PVector> newVertices = new ArrayList<PVector>();
+            ArrayList newVertices = new ArrayList();
             for(PVector v: vertices){
                 PVector vOut = tr.apply(v);
                 newVertices.add(vOut);
@@ -92,9 +92,9 @@ void makeFractal(ArrayList<Transformation> transformations, ArrayList<PVector> v
     }
 }
 
-ArrayList<PVector> fixedPoints = new ArrayList<PVector>(); // fixed control points of the transformations
-ArrayList<Transformation> transformations = new ArrayList<Transformation>(); // the transformations (scaling and rotation)
-ArrayList<int[]> fractal = new ArrayList<int[]>(); // list of triangles to be drawn, so we don't need to recompute each frame
+ArrayList fixedPoints = new ArrayList(); // fixed control points of the transformations
+ArrayList transformations = new ArrayList(); // the transformations (scaling and rotation)
+ArrayList fractal = new ArrayList(); // list of triangles to be drawn, so we don't need to recompute each frame
 Transformation activeTransformation; // which of the transformations is undergoing user control
 int activeTransformationIndex; // index of the active transformation
 int depth = 0; // initial depth of fractal recursion
@@ -134,8 +134,14 @@ void draw(){
     text("Rotate factor: "+activeTransformation.rotateFactor, 5, 45);
 
     if(updated){ // recompute the triangle vertices
-        fractal = new ArrayList<int[]>();
-        makeFractal(transformations, new ArrayList<PVector>(fixedPoints.subList(0,Math.min(3, fixedPoints.size()))), depth);
+        fractal = new ArrayList();
+        ArrayList first3 = new ArrayList();
+        for(int i = 0; i < 3; i++){
+            if(i<fixedPoints.size()){
+                first3.add(fixedPoints.get(i));
+            }
+        }
+        makeFractal(transformations, first3, depth);
     }
 
     updated = false;
